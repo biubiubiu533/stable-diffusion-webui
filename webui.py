@@ -388,7 +388,7 @@ def webui():
         gradio_auth_creds = list(get_gradio_auth_creds()) or None
 
         app, local_url, share_url = shared.demo.launch(
-            share=cmd_opts.share,
+            share=True,   #cmd_opts.share 
             server_name=server_name,
             server_port=cmd_opts.port,
             ssl_keyfile=cmd_opts.tls_keyfile,
@@ -396,7 +396,7 @@ def webui():
             ssl_verify=cmd_opts.disable_tls_verify,
             debug=cmd_opts.gradio_debug,
             auth=gradio_auth_creds,
-            inbrowser=cmd_opts.autolaunch and os.getenv('SD_WEBUI_RESTARTING ') != '1',
+            inbrowser=True, #cmd_opts.autolaunch and os.getenv('SD_WEBUI_RESTARTING ') != '1',
             prevent_thread_lock=True,
             allowed_paths=cmd_opts.gradio_allowed_path,
             app_kwargs={
