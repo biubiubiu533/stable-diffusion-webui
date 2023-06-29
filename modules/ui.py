@@ -1087,7 +1087,7 @@ def create_ui():
         return interp_descriptions[value]
 
     with gr.Blocks(analytics_enabled=False) as modelmerger_interface:
-        with gr.Row().style(equal_height=False):
+        with gr.Row(visible=False).style(equal_height=False):
             with gr.Column(variant='compact'):
                 interp_description = gr.HTML(value=update_interp_description("Weighted sum"), elem_id="modelmerger_interp_description")
 
@@ -1131,7 +1131,7 @@ def create_ui():
                     modelmerger_result = gr.HTML(elem_id="modelmerger_result", show_label=False)
 
     with gr.Blocks(analytics_enabled=False) as train_interface:
-        with gr.Row().style(equal_height=False):
+        with gr.Row(visible=False).style(equal_height=False):
             gr.HTML(value="<p style='margin-bottom: 0.7em'>See <b><a href=\"https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Textual-Inversion\">wiki</a></b> for detailed explanation.</p>")
 
         with gr.Row(variant="compact").style(equal_height=False):
