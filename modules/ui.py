@@ -177,7 +177,7 @@ def create_seed_inputs(target_interface):
         random_seed = ToolButton(random_symbol, elem_id=f"{target_interface}_random_seed", label='Random seed')
         reuse_seed = ToolButton(reuse_symbol, elem_id=f"{target_interface}_reuse_seed", label='Reuse seed')
 
-        seed_checkbox = gr.Checkbox(label='Extra', elem_id=f"{target_interface}_subseed_show", value=False)
+        seed_checkbox = gr.Checkbox(label='Extra', elem_id=f"{target_interface}_subseed_show", value=False, visible=False)
 
     # Components to show/hide based on the 'Extra' checkbox
     seed_extras = []
@@ -458,12 +458,13 @@ def create_ui():
                         seed, reuse_seed, subseed, reuse_subseed, subseed_strength, seed_resize_from_h, seed_resize_from_w, seed_checkbox = create_seed_inputs('txt2img')
 
                     elif category == "checkboxes":
-                        with FormRow(elem_classes="checkboxes-row", variant="compact"):
-                            restore_faces = gr.Checkbox(label='Restore faces', value=False, visible=len(shared.face_restorers) > 1, elem_id="txt2img_restore_faces")
-                            tiling = gr.Checkbox(label='Tiling', value=False, elem_id="txt2img_tiling")
-                            enable_hr = gr.Checkbox(label='Hires. fix', value=False, elem_id="txt2img_enable_hr")
-                            hr_final_resolution = FormHTML(value="", elem_id="txtimg_hr_finalres", label="Upscaled resolution", interactive=False)
+                        
+                        restore_faces = gr.Checkbox(label='Restore faces', value=False, visible=False, elem_id="txt2img_restore_faces")  #visible=len(shared.face_restorers) > 1
+                        tiling = gr.Checkbox(label='Tiling', value=False, elem_id="txt2img_tiling", visible=False)
+                        enable_hr = gr.Checkbox(label='Hires. fix', value=False, elem_id="txt2img_enable_hr")
+                        hr_final_resolution = FormHTML(value="", elem_id="txtimg_hr_finalres", label="Upscaled resolution", interactive=False, visible=False)
 
+                            
                     elif category == "hires_fix":
                         with FormGroup(visible=False, elem_id="txt2img_hires_fix") as hr_options:
                             with FormRow(elem_id="txt2img_hires_fix_row1", variant="compact"):
@@ -491,14 +492,14 @@ def create_ui():
                         if not opts.dimensions_and_batch_together:
                             with FormRow(elem_id="txt2img_column_batch"):
                                 batch_count = gr.Slider(minimum=1, step=1, label='Batch count', value=1, elem_id="txt2img_batch_count")
-                                batch_size = gr.Slider(minimum=1, maximum=8, step=1, label='Batch size', value=1, elem_id="txt2img_batch_size")
+                                batch_size = gr.Slider(minimum=1, maximum=8, step=1, label='Batch size', value=1, elem_id="txt2img_batch_size", visible=False)
 
                     elif category == "override_settings":
                         with FormRow(elem_id="txt2img_override_settings_row") as row:
                             override_settings = create_override_settings_dropdown('txt2img', row)
 
                     elif category == "scripts":
-                        with FormGroup(elem_id="txt2img_script_container"):
+                        with FormGroup(elem_id="txt2img_script_container", visible=False):
                             custom_inputs = modules.scripts.scripts_txt2img.setup_ui()
 
                     else:
@@ -603,7 +604,7 @@ def create_ui():
             enable_hr.change(
                 fn=lambda x: gr_show(x),
                 inputs=[enable_hr],
-                outputs=[hr_options],
+                outputs=[hr_final_resolution],
                 show_progress = False,
             )
 
@@ -1482,7 +1483,7 @@ def create_ui():
             sorted_interfaces = sorted(interfaces, key=lambda x: tab_order.get(x[1], 9999))
 
             for interface, label, ifid in sorted_interfaces:
-                if label in shared.opts.hidden_tabs:
+                if label in shared.opts.hidden_tabs or label in ['Extras', 'Train', 'Checkpoint Merger', 'Extensions']:
                     continue
                 with gr.TabItem(label, id=ifid, elem_id=f"tab_{ifid}"):
                     interface.render()
