@@ -306,6 +306,7 @@ class StableDiffusionProcessing:
         if type(self.prompt) == list:
             self.all_prompts = self.prompt
         else:
+    
             self.all_prompts = self.batch_size * self.n_iter * [self.prompt]
 
         if type(self.negative_prompt) == list:

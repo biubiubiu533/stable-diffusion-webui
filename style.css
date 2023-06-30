@@ -329,6 +329,18 @@ div.dimensions-tools{
     place-content: center;
 }
 
+div.radio-group {
+    display: grid !important;
+    grid-template-columns: repeat(2, 12em);
+    gap: 6em;
+    }
+
+div.radio-group {
+    display: grid !important;
+    grid-template-columns: repeat(2, 12em);
+    gap: 6em;
+    }
+
 div#extras_scale_to_tab div.form{
     flex-direction: row;
 }
@@ -351,6 +363,10 @@ div#extras_scale_to_tab div.form{
 #img2img_column_batch{
     align-self: end;
     margin-bottom: 0.9em;
+}
+
+#img2img_unused_tabs{
+    visibility: hidden;
 }
 
 #img2img_unused_scale_by_slider{
