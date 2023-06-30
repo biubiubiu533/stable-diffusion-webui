@@ -714,58 +714,58 @@ def create_ui():
                             copy_image_buttons.append((button, name, elem))
 
 
-                
-                img2img_selected_tab = gr.State(0)
+                with gr.Tabs(elem_id="mode_img2img"):
+                    img2img_selected_tab = gr.State(0)
 
-                with gr.Tab('img2img', id='img2img', elem_id="img2img_img2img_tab") as tab_img2img:
-                    init_img = gr.Image(label="Image for img2img", elem_id="img2img_image", show_label=False, source="upload", interactive=True, type="pil", tool="editor", image_mode="RGBA", container=True).style(height=opts.img2img_editor_height)
-                    add_copy_image_controls('img2img', init_img) 
+                    with gr.TabItem('img2img', id='img2img', elem_id="img2img_img2img_tab") as tab_img2img:
+                        init_img = gr.Image(label="Image for img2img", elem_id="img2img_image", show_label=False, source="upload", interactive=True, type="pil", tool="editor", image_mode="RGBA", container=True).style(height=opts.img2img_editor_height)
+                        add_copy_image_controls('img2img', init_img) 
 
-                with gr.Tab('Sketch', id='img2img_sketch', elem_id="img2img_img2img_sketch_tab") as tab_sketch:
-                    sketch = gr.Image(label="Image for img2img", elem_id="img2img_sketch", show_label=False, source="upload", interactive=True, type="pil", tool="color-sketch", image_mode="RGBA").style(height=opts.img2img_editor_height)
-                    add_copy_image_controls('sketch', sketch)
-                
-                with gr.Tab('Inpaint', id='inpaint', elem_id="img2img_inpaint_tab") as tab_inpaint:
-                    init_img_with_mask = gr.Image(label="Image for inpainting with mask", show_label=False, elem_id="img2maskimg", source="upload", interactive=True, type="pil", tool="sketch", image_mode="RGBA").style(height=opts.img2img_editor_height)
-                    add_copy_image_controls('inpaint', init_img_with_mask)
+                    with gr.TabItem('Sketch', id='img2img_sketch', elem_id="img2img_img2img_sketch_tab") as tab_sketch:
+                        sketch = gr.Image(label="Image for img2img", elem_id="img2img_sketch", show_label=False, source="upload", interactive=True, type="pil", tool="color-sketch", image_mode="RGBA").style(height=opts.img2img_editor_height)
+                        add_copy_image_controls('sketch', sketch)
+                   
+                    with gr.TabItem('Inpaint', id='inpaint', elem_id="img2img_inpaint_tab") as tab_inpaint:
+                        init_img_with_mask = gr.Image(label="Image for inpainting with mask", show_label=False, elem_id="img2maskimg", source="upload", interactive=True, type="pil", tool="sketch", image_mode="RGBA").style(height=opts.img2img_editor_height)
+                        add_copy_image_controls('inpaint', init_img_with_mask)
+
+                        
+                    with gr.TabItem('Inpaint sketch', id='inpaint_sketch', elem_id="img2img_inpaint_sketch_tab") as tab_inpaint_color:
+                        inpaint_color_sketch = gr.Image(label="Color sketch inpainting", show_label=False, elem_id="inpaint_sketch", source="upload", interactive=True, type="pil", tool="color-sketch", image_mode="RGBA").style(height=opts.img2img_editor_height)
+                        inpaint_color_sketch_orig = gr.State(None)
+                        add_copy_image_controls('inpaint_sketch', inpaint_color_sketch)
+
+                        def update_orig(image, state):
+                            if image is not None:
+                                same_size = state is not None and state.size == image.size
+                                has_exact_match = np.any(np.all(np.array(image) == np.array(state), axis=-1))
+                                edited = same_size and has_exact_match
+                                return image if not edited or state is None else state
+
+                        inpaint_color_sketch.change(update_orig, [inpaint_color_sketch, inpaint_color_sketch_orig], inpaint_color_sketch_orig)
 
                     
-                with gr.Tab('Inpaint sketch', id='inpaint_sketch', elem_id="img2img_inpaint_sketch_tab") as tab_inpaint_color:
-                    inpaint_color_sketch = gr.Image(label="Color sketch inpainting", show_label=False, elem_id="inpaint_sketch", source="upload", interactive=True, type="pil", tool="color-sketch", image_mode="RGBA").style(height=opts.img2img_editor_height)
-                    inpaint_color_sketch_orig = gr.State(None)
-                    add_copy_image_controls('inpaint_sketch', inpaint_color_sketch)
-
-                    def update_orig(image, state):
-                        if image is not None:
-                            same_size = state is not None and state.size == image.size
-                            has_exact_match = np.any(np.all(np.array(image) == np.array(state), axis=-1))
-                            edited = same_size and has_exact_match
-                            return image if not edited or state is None else state
-
-                    inpaint_color_sketch.change(update_orig, [inpaint_color_sketch, inpaint_color_sketch_orig], inpaint_color_sketch_orig)
+                    with gr.TabItem('Inpaint upload', id='inpaint_upload', elem_id="img2img_inpaint_upload_tab") as tab_inpaint_upload:
+                        init_img_inpaint = gr.Image(label="Image for img2img", show_label=False, source="upload", interactive=True, type="pil", elem_id="img_inpaint_base")
+                        init_mask_inpaint = gr.Image(label="Mask", source="upload", interactive=True, type="pil", elem_id="img_inpaint_mask")
 
                 
-                with gr.Tab('Inpaint upload', id='inpaint_upload', elem_id="img2img_inpaint_upload_tab") as tab_inpaint_upload:
-                    init_img_inpaint = gr.Image(label="Image for img2img", show_label=False, source="upload", interactive=True, type="pil", elem_id="img_inpaint_base")
-                    init_mask_inpaint = gr.Image(label="Mask", source="upload", interactive=True, type="pil", elem_id="img_inpaint_mask")
+                    with gr.TabItem('Batch', id='batch', elem_id="img2img_batch_tab") as tab_batch:
+                        hidden = '<br>Disabled when launched with --hide-ui-dir-config.' if shared.cmd_opts.hide_ui_dir_config else ''
+                        gr.HTML(
+                            "<p style='padding-bottom: 1em;' class=\"text-gray-500\">Process images in a directory on the same machine where the server is running." +
+                            "<br>Use an empty output directory to save pictures normally instead of writing to the output directory." +
+                            f"<br>Add inpaint batch mask directory to enable inpaint batch processing."
+                            f"{hidden}</p>"
+                        )
+                        img2img_batch_input_dir = gr.Textbox(label="Input directory", **shared.hide_dirs, elem_id="img2img_batch_input_dir")
+                        img2img_batch_output_dir = gr.Textbox(label="Output directory", **shared.hide_dirs, elem_id="img2img_batch_output_dir")
+                        img2img_batch_inpaint_mask_dir = gr.Textbox(label="Inpaint batch mask directory (required for inpaint batch processing only)", **shared.hide_dirs, elem_id="img2img_batch_inpaint_mask_dir")
+                
+                    img2img_tabs = [tab_img2img, tab_sketch, tab_inpaint, tab_inpaint_color, tab_inpaint_upload, tab_batch] 
 
-            
-                with gr.Tab('Batch', id='batch', elem_id="img2img_batch_tab") as tab_batch:
-                    hidden = '<br>Disabled when launched with --hide-ui-dir-config.' if shared.cmd_opts.hide_ui_dir_config else ''
-                    gr.HTML(
-                        "<p style='padding-bottom: 1em;' class=\"text-gray-500\">Process images in a directory on the same machine where the server is running." +
-                        "<br>Use an empty output directory to save pictures normally instead of writing to the output directory." +
-                        f"<br>Add inpaint batch mask directory to enable inpaint batch processing."
-                        f"{hidden}</p>"
-                    )
-                    img2img_batch_input_dir = gr.Textbox(label="Input directory", **shared.hide_dirs, elem_id="img2img_batch_input_dir")
-                    img2img_batch_output_dir = gr.Textbox(label="Output directory", **shared.hide_dirs, elem_id="img2img_batch_output_dir")
-                    img2img_batch_inpaint_mask_dir = gr.Textbox(label="Inpaint batch mask directory (required for inpaint batch processing only)", **shared.hide_dirs, elem_id="img2img_batch_inpaint_mask_dir")
-            
-                img2img_tabs = [tab_img2img, tab_sketch, tab_inpaint, tab_inpaint_color, tab_inpaint_upload, tab_batch] 
-
-                for i, tab in enumerate(img2img_tabs):
-                    tab.select(fn=lambda tabnum=i: tabnum, inputs=[], outputs=[img2img_selected_tab])
+                    for i, tab in enumerate(img2img_tabs):
+                        tab.select(fn=lambda tabnum=i: tabnum, inputs=[], outputs=[img2img_selected_tab])
 
                 def copy_image(img):
                     if isinstance(img, dict) and 'image' in img:
