@@ -177,7 +177,6 @@ class FrozenCLIPEmbedderWithCustomWordsBase(torch.nn.Module):
         Accepts a list of texts and calls tokenize_line() on each, with cache. Returns the list of results and maximum
         length, in tokens, of all texts.
         """
-
         token_count = 0
 
         cache = {}
@@ -226,10 +225,20 @@ class FrozenCLIPEmbedderWithCustomWordsBase(torch.nn.Module):
                 for _position, embedding in fixes:
                     used_embeddings[embedding.name] = embedding
 
+
             z = self.process_tokens(tokens, multipliers)
             zs.append(z)
 
+        # from modules.shared import cmd_opts
+        # import os
+        # easy_negative_file = "EasyNegative.safetensors"
+        # easy_negative_dir = os.path.join(cmd_opts.embeddings_dir, easy_negative_file)
+        # easy_negative_embedding = self.hijack.embedding_db.load_from_file(easy_negative_dir, easy_negative_file)
+        # used_embeddings = {'EasyNegative': easy_negative_embedding}
+        
         if len(used_embeddings) > 0:
+            print("used_embeddings***************************")
+            print(used_embeddings)
             embeddings_list = ", ".join([f'{name} [{embedding.checksum()}]' for name, embedding in used_embeddings.items()])
             self.hijack.comments.append(f"Used embeddings: {embeddings_list}")
 

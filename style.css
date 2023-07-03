@@ -333,12 +333,7 @@ div.radio-group {
     display: grid !important;
     grid-template-columns: repeat(2, 12em);
     gap: 6em;
-    }
-
-div.radio-group {
-    display: grid !important;
-    grid-template-columns: repeat(2, 12em);
-    gap: 6em;
+    padding-left: 2em;
     }
 
 div#extras_scale_to_tab div.form{
