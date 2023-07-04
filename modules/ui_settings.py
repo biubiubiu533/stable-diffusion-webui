@@ -105,7 +105,7 @@ class UiSettings:
         opts.reorder()
 
         with gr.Blocks(analytics_enabled=False) as settings_interface:
-            with gr.Row(visible=False):
+            with gr.Row():
                 with gr.Column(scale=6):
                     self.submit = gr.Button(value="Apply settings", variant='primary', elem_id="settings_submit")
                 with gr.Column():
