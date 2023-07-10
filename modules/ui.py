@@ -1544,21 +1544,14 @@ def create_ui():
                     continue
                 with gr.TabItem(label, id=ifid, elem_id=f"tab_{ifid}"):
                     interface.render()
-            
-            print(1111111111111111111111111111111)
-            print(steps.value, sampler_index.value)
 
             for interface, _label, ifid in interfaces:
                 if ifid in ["extensions", "settings"]:
                     continue
-                
-                print(_label, ifid)
+  
                 loadsave.add_block(interface, ifid)
 
             loadsave.add_component(f"webui/Tabs@{tabs.elem_id}", tabs)
-
-            print(55555555555555555555555555555555)
-            print(steps.value, sampler_index.value)
 
             loadsave.setup_ui()
 
