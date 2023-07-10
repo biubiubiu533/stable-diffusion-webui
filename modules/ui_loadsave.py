@@ -12,6 +12,8 @@ class UiLoadsave:
 
     def __init__(self, filename):
         self.filename = filename
+        print("filename-----------------")
+        print(filename)
         self.ui_settings = {}
         self.component_mapping = {}
         self.error_loading = False

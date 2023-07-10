@@ -485,8 +485,8 @@ def create_ui():
                         
                                 elif category == "checkboxes":
                                     with FormRow(elem_classes="checkboxes-row", variant="compact"):
-                                        restore_faces = gr.Checkbox(label='Restore faces', value=False, visible=False, elem_id="txt2img_restore_faces")  #visible=len(shared.face_restorers) > 1
-                                        tiling = gr.Checkbox(label='Tiling', value=False, elem_id="txt2img_tiling", visible=False)
+                                        restore_faces = gr.Checkbox(label='Restore faces', value=False, elem_id="txt2img_restore_faces", visible=len(shared.face_restorers) > 1)
+                                        tiling = gr.Checkbox(label='Tiling', value=False, elem_id="txt2img_tiling")
 
                                         enable_hr = gr.Checkbox(label='Hires. fix', value=False, elem_id="txt2img_enable_hr")
                                         hr_final_resolution = FormHTML(value="", elem_id="txtimg_hr_finalres", label="Upscaled resolution", interactive=False)
@@ -530,9 +530,8 @@ def create_ui():
                         with FormGroup(elem_id="txt2img_script_container"):
                             custom_inputs = modules.scripts.scripts_txt2img.setup_ui()
 
-
-
             hr_resolution_preview_inputs = [enable_hr, width, height, hr_scale, hr_resize_x, hr_resize_y]
+
 
             for component in hr_resolution_preview_inputs:
                 event = component.release if isinstance(component, gr.Slider) else component.change
@@ -666,6 +665,7 @@ def create_ui():
                 (hr_prompts_container, lambda d: gr.update(visible=True) if d.get("Hires prompt", "") != "" or d.get("Hires negative prompt", "") != "" else gr.update()),
                 *modules.scripts.scripts_txt2img.infotext_fields
             ]
+
             parameters_copypaste.add_paste_fields("txt2img", None, txt2img_paste_fields, override_settings)
             parameters_copypaste.register_paste_params_button(parameters_copypaste.ParamBinding(
                 paste_button=txt2img_paste, tabname="txt2img", source_text_component=txt2img_prompt, source_image_component=None,
@@ -859,8 +859,8 @@ def create_ui():
                             seed, reuse_seed, subseed, reuse_subseed, subseed_strength, seed_resize_from_h, seed_resize_from_w, seed_checkbox = create_seed_inputs('img2img')               
                     elif category == "inpaint":
                         with FormGroup(elem_id="inpaint_controls", visible=False) as inpaint_controls:
-                            with FormRow():
-                                mask_blur = gr.Slider(label='Mask blur', minimum=0, maximum=64, step=1, value=4, elem_id="img2img_mask_blur")
+                            with FormRow(visible=False):
+                                mask_blur = gr.Slider(label='Mask blur', minimum=0, maximum=64, step=1, value=0, elem_id="img2img_mask_blur")
                                 mask_alpha = gr.Slider(label="Mask transparency", visible=False, elem_id="img2img_mask_alpha")
 
                             with FormRow():
@@ -890,6 +890,8 @@ def create_ui():
                                 
                                 elif category == "sampler":
                                     steps, sampler_index = create_sampler_and_steps_selection(samplers_for_img2img, "img2img")
+                                    print(00000000000000000000000000000000)
+                                    print(steps.value, sampler_index.value)
 
                                 elif category == "cfg":
                                     with FormGroup():
@@ -1095,6 +1097,7 @@ def create_ui():
 
     modules.scripts.scripts_current = None
 
+
     with gr.Blocks(analytics_enabled=False) as extras_interface:
         ui_postprocessing.create_ui()
 
@@ -1173,6 +1176,7 @@ def create_ui():
             with gr.Column(variant='compact', elem_id="modelmerger_results_container"):
                 with gr.Group(elem_id="modelmerger_results_panel"):
                     modelmerger_result = gr.HTML(elem_id="modelmerger_result", show_label=False)
+
 
     with gr.Blocks(analytics_enabled=False) as train_interface:
         with gr.Row(visible=False).style(equal_height=False):
@@ -1282,6 +1286,8 @@ def create_ui():
 
                 with gr.Tab(label="Train", id="train"):
                     gr.HTML(value="<p style='margin-bottom: 0.7em'>Train an embedding or Hypernetwork; you must specify a directory with a set of 1:1 ratio images <a href=\"https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Textual-Inversion\" style=\"font-weight:bold;\">[wiki]</a></p>")
+                    
+                    
                     with FormRow():
                         train_embedding_name = gr.Dropdown(label='Embedding', elem_id="train_embedding", choices=sorted(sd_hijack.model_hijack.embedding_db.word_embeddings.keys()))
                         create_refresh_button(train_embedding_name, sd_hijack.model_hijack.embedding_db.load_textual_inversion_embeddings, lambda: {"choices": sorted(sd_hijack.model_hijack.embedding_db.word_embeddings.keys())}, "refresh_train_embedding_name")
@@ -1311,7 +1317,7 @@ def create_ui():
                     training_width = gr.Slider(minimum=64, maximum=2048, step=8, label="Width", value=512, elem_id="train_training_width")
                     training_height = gr.Slider(minimum=64, maximum=2048, step=8, label="Height", value=512, elem_id="train_training_height")
                     varsize = gr.Checkbox(label="Do not resize images", value=False, elem_id="train_varsize")
-                    steps = gr.Number(label='Max steps', value=100000, precision=0, elem_id="train_steps")
+                    train_steps = gr.Number(label='Max steps', value=100000, precision=0, elem_id="train_steps")
 
                     with FormRow():
                         create_image_every = gr.Number(label='Save an image to log directory every N steps, 0 to disable', value=500, precision=0, elem_id="train_create_image_every")
@@ -1341,6 +1347,7 @@ def create_ui():
                 gr.Gallery(label='Output', show_label=False, elem_id='ti_gallery').style(columns=4)
                 gr.HTML(elem_id="ti_progress", value="")
                 ti_outcome = gr.HTML(elem_id="ti_error", value="")
+
 
         create_embedding.click(
             fn=modules.textual_inversion.ui.create_embedding,
@@ -1427,7 +1434,7 @@ def create_ui():
                 training_width,
                 training_height,
                 varsize,
-                steps,
+                train_steps,
                 clip_grad_mode,
                 clip_grad_value,
                 shuffle_tags,
@@ -1461,7 +1468,7 @@ def create_ui():
                 training_width,
                 training_height,
                 varsize,
-                steps,
+                train_steps,
                 clip_grad_mode,
                 clip_grad_value,
                 shuffle_tags,
@@ -1497,6 +1504,7 @@ def create_ui():
     settings = ui_settings.UiSettings()
     settings.create_ui(loadsave, dummy_component)
 
+    
     interfaces = [
         (txt2img_interface, "txt2img", "txt2img"),
         (img2img_interface, "img2img", "img2img"),
@@ -1536,14 +1544,21 @@ def create_ui():
                     continue
                 with gr.TabItem(label, id=ifid, elem_id=f"tab_{ifid}"):
                     interface.render()
+            
+            print(1111111111111111111111111111111)
+            print(steps.value, sampler_index.value)
 
             for interface, _label, ifid in interfaces:
                 if ifid in ["extensions", "settings"]:
                     continue
-
+                
+                print(_label, ifid)
                 loadsave.add_block(interface, ifid)
 
             loadsave.add_component(f"webui/Tabs@{tabs.elem_id}", tabs)
+
+            print(55555555555555555555555555555555)
+            print(steps.value, sampler_index.value)
 
             loadsave.setup_ui()
 
