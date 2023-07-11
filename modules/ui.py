@@ -890,8 +890,6 @@ def create_ui():
                                 
                                 elif category == "sampler":
                                     steps, sampler_index = create_sampler_and_steps_selection(samplers_for_img2img, "img2img")
-                                    print(00000000000000000000000000000000)
-                                    print(steps.value, sampler_index.value)
 
                                 elif category == "cfg":
                                     with FormGroup():
