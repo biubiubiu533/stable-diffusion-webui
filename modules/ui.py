@@ -37,9 +37,6 @@ import modules.hypernetworks.ui
 from modules.generation_parameters_copypaste import image_from_url_text
 import modules.extras
 
-import openai
-
-openai.api_key = "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"
 
 create_setting_component = ui_settings.create_setting_component
 
@@ -319,8 +316,9 @@ def create_toprow(is_img2img):
                 extra_networks_button = ToolButton(value=extra_networks_symbol, elem_id=f"{id_part}_extra_networks")
                 #prompt_style_apply = ToolButton(value=apply_style_symbol, elem_id=f"{id_part}_style_apply")
                 #save_style = ToolButton(value=save_style_symbol, elem_id=f"{id_part}_style_create")
-                restore_progress_button = ToolButton(value=restore_progress_symbol, elem_id=f"{id_part}_restore_progress", visible=False)
 
+                restore_progress_button = ToolButton(value=restore_progress_symbol, elem_id=f"{id_part}_restore_progress", visible=False)
+                
                 token_counter = gr.HTML(value="<span>0/75</span>", elem_id=f"{id_part}_token_counter", elem_classes=["token-counter"])
                 token_button = gr.Button(visible=False, elem_id=f"{id_part}_token_button")
                 negative_token_counter = gr.HTML(value="<span>0/75</span>", elem_id=f"{id_part}_negative_token_counter", elem_classes=["token-counter"])
@@ -1518,13 +1516,13 @@ def create_ui():
     extensions_interface = ui_extensions.create_ui()
     interfaces += [(extensions_interface, "Extensions", "extensions")]
 
+
     shared.tab_names = []
     for _interface, label, _ifid in interfaces:
         shared.tab_names.append(label)
 
     with gr.Blocks(theme=shared.gradio_theme, analytics_enabled=False, title="Stable Diffusion") as demo:
         settings.add_quicksettings()
-
         parameters_copypaste.connect_paste_params_buttons()
 
         # with gr.Tabs(visible=False):
@@ -1552,6 +1550,7 @@ def create_ui():
             loadsave.add_component(f"webui/Tabs@{tabs.elem_id}", tabs)
 
             loadsave.setup_ui()
+
 
         if os.path.exists(os.path.join(script_path, "notification.mp3")):
             gr.Audio(interactive=False, value=os.path.join(script_path, "notification.mp3"), elem_id="audio_notification", visible=False)

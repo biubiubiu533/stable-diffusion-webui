@@ -98,6 +98,12 @@ function switch_to_extras() {
 
     return Array.from(arguments);
 }
+function switch_to_prompt_generator() {
+    gradioApp().querySelector('#tabs').querySelectorAll('button')[3].click();
+
+    return Array.from(arguments);
+}
+
 
 function get_tab_index(tabId) {
     let buttons = gradioApp().getElementById(tabId).querySelector('div').querySelectorAll('button');
