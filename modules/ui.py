@@ -628,7 +628,7 @@ def create_ui():
             enable_hr.change(
                 fn=lambda x: gr_show(x),
                 inputs=[enable_hr],
-                outputs=[],
+                outputs=[hr_options],
                 show_progress = False,
             )
 
@@ -650,7 +650,7 @@ def create_ui():
                 (txt2img_prompt_styles, lambda d: d["Styles array"] if isinstance(d.get("Styles array"), list) else gr.update()),
                 (denoising_strength, "Denoising strength"),
                 (enable_hr, lambda d: "Denoising strength" in d),
-                (hr_options, lambda d: gr.Row.update(visible=False)), #visible="Denoising strength" in d
+                (hr_options, lambda d: gr.Row.update(visible="Denoising strength" in d)),
                 (hr_scale, "Hires upscale"),
                 (hr_upscaler, "Hires upscaler"),
                 (hr_second_pass_steps, "Hires steps"),

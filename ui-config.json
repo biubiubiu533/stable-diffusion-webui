@@ -910,5 +910,7 @@
     "txt2img/send to prompt generator/visible": true,
     "img2img/send to prompt generator/visible": true,
     "Prompt Generator/model/visible": true,
-    "Prompt Generator/model/value": "FredZhang7"
+    "Prompt Generator/model/value": "FredZhang7",
+    "Prompt Generator/Send to txt2img/visible": true,
+    "Prompt Generator/Send to img2img/visible": true
 }
